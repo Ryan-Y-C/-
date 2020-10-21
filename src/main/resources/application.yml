@@ -1,0 +1,8 @@
+mybatis:
+  config-location: classpath:db/mybatis/config.xml
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+    username: root
+    password: 123456
