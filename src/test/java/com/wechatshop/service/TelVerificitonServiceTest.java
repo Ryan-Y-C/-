@@ -2,13 +2,21 @@ package com.wechatshop.service;
 
 import com.wechatshop.entity.TelAndCode;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class TelVerificitonServiceTest {
-    private TelAndCode VALLID_PARAMETER = new TelAndCode("17689231288", null);
+    public static TelAndCode VALID_PARAMETER = new TelAndCode("13689231288", null);
+    //invalid
+    public static TelAndCode INVALID_PARAMETER = new TelAndCode("123", null);
 
-    public void returnTrueIfVaild() {
-        Assertions.assertTrue(new TelVerificitonService().verifyTelParameter(VALLID_PARAMETER), "true");
+    @Test
+    public void returnTrueIfValid() {
+        Assertions.assertTrue(new TelVerificitonService().verifyTelParameter(VALID_PARAMETER));
+    }
+
+    @Test
+    public void returnFalseIfValid() {
+        Assertions.assertFalse(new TelVerificitonService().verifyTelParameter(INVALID_PARAMETER));
     }
 }
