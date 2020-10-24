@@ -1,8 +1,10 @@
 package com.wechatshop.controller;
 
+import com.wechatshop.entity.LoginResponse;
 import com.wechatshop.entity.TelAndCode;
 import com.wechatshop.service.AuthService;
 import com.wechatshop.service.TelVerificitonService;
+import com.wechatshop.service.UserContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class AuthController {
     public void code(@RequestBody TelAndCode telAndCode, HttpServletResponse response) {
         if (telVerificitonService.verifyTelParameter(telAndCode)) {
             authService.sendVerificationCode(telAndCode.getTel());
-        }else {
+        } else {
             response.setStatus(SC_BAD_REQUEST);
         }
     }
@@ -41,9 +43,19 @@ public class AuthController {
         SecurityUtils.getSubject().login(token);
 
     }
+    @GetMapping("/logout")
+    public void logout() {
+        SecurityUtils.getSubject().logout();
+
+    }
 
     @GetMapping("/status")
-    public void loginStatus(){
-        System.out.println(SecurityUtils.getSubject().getPrincipal());
+    public Object loginStatus() {
+        if (UserContext.getCurrentUser() != null) {
+            System.out.println(SecurityUtils.getSubject().getPrincipal());
+            return LoginResponse.login(UserContext.getCurrentUser());
+        } else {
+            return LoginResponse.notLogin();
+        }
     }
 }

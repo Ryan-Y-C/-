@@ -10,7 +10,7 @@ class TelVerificitonServiceTest {
     //invalid
     public static TelAndCode INVALID_PARAMETER = new TelAndCode("123", null);
 
-    public static TelAndCode VALID_PARAMETER_CODE = new TelAndCode("123", "000000");
+    public static TelAndCode VALID_PARAMETER_CODE = new TelAndCode("13689231288", "000000");
 
     @Test
     public void returnTrueIfValid() {
