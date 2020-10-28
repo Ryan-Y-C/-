@@ -3,9 +3,9 @@ mybatis:
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+    url: jdbc:mysql://localhost:3305/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
     username: root
     password: 123456
   main:
     allow-bean-definition-overriding: true
-
+#    web-application-type: none

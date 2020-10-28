@@ -18,7 +18,9 @@ public class AuthService {
 
 
     public void sendVerificationCode(String tel) {
+        //通过电话获取用户
         userService.createUserIfNotExist(tel);
+        //通过电话获取验证吗
         String correctCode = smsCodeService.sendSmsCode(tel);
         verificationCodeCheckService.addCode(tel, correctCode);
     }

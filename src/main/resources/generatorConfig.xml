@@ -6,8 +6,9 @@
 <generatorConfiguration>
 
     <context id="wechatshop" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin">
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3307/wechatshop?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;nullCatalogMeansCurrent=true"
+                        connectionURL="jdbc:mysql://localhost:3307/wechatshop?characterEncoding=utf8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;nullCatalogMeansCurrent=true"
                         userId="root"
                         password="123456">
         </jdbcConnection>
@@ -28,10 +29,26 @@
         <table schema="" tableName="user" domainObjectName="User" >
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true" />
-            <columnOverride column="avatar_url" property="avatarUrl" />
-            <columnOverride column="crated_at" property="createdAt" />
-            <columnOverride column="updated_at" property="updatedAt" />
+<!--            <columnOverride column="avatar_url" property="avatarUrl" />-->
+<!--            <columnOverride column="crated_at" property="createdAt" />-->
+<!--            <columnOverride column="updated_at" property="updatedAt" />-->
         </table>
-
+        <table schema="" tableName="order" domainObjectName="Order" >
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true" />
+        </table>
+        <table schema="" tableName="goods" domainObjectName="Goods" >
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true" />
+        </table>
+        <table schema="" tableName="shopping_cart" domainObjectName="ShoppingCart" >
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true" />
+        </table>
+        <table schema="" tableName="shop" domainObjectName="Shop" >
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="ID" sqlStatement="MySql" identity="true" />
+        </table>
+        </plugin>
     </context>
 </generatorConfiguration>

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class AuthController {
     private final AuthService authService;
     private final TelVerificitonService telVerificitonService;
@@ -41,12 +41,12 @@ public class AuthController {
                 new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
         token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
+        System.out.println(token.toString());
 
     }
     @GetMapping("/logout")
     public void logout() {
         SecurityUtils.getSubject().logout();
-
     }
 
     @GetMapping("/status")

@@ -31,6 +31,7 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String tel = (String) authenticationToken.getPrincipal();
+        //通过电话获取验证码
         String correctCode = verificationCodeCheckService.getCorrectCode(tel);
         return new SimpleAuthenticationInfo(tel, correctCode, getName());
     }
