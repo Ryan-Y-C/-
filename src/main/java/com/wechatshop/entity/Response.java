@@ -3,6 +3,8 @@ package com.wechatshop.entity;
 public class Response<T>  {
     private T data;
 
+    private Response(){}
+
     private Response(T data) {
         this.data = data;
     }

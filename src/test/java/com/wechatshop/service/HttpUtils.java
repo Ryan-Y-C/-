@@ -3,10 +3,10 @@ package com.wechatshop.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.entity.LoginResponse;
-import com.wechatshop.entity.TelAndCode;
 import okhttp3.*;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,13 @@ import org.springframework.core.env.Environment;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.wechatshop.service.TelVerificitonServiceTest.VALID_PARAMETER;
+import static com.wechatshop.service.TelVerificitonServiceTest.VALID_PARAMETER_CODE;
+import static java.net.HttpURLConnection.HTTP_OK;
+
 public class HttpUtils {
+    @Autowired
+    private Environment environment;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private OkHttpClient client = new OkHttpClient();
@@ -36,9 +42,16 @@ public class HttpUtils {
         flyway.migrate();
     }
 
-    public String post(String url, TelAndCode telAndCode, boolean isReturnResponse) throws IOException {
+    protected String loginAndGetCookie() throws IOException {
+        //注册
+        post("/api/v1/code", VALID_PARAMETER, response -> Assertions.assertEquals(HTTP_OK, response.code()));
+        //登录并获取Cookie
+        return post("/api/v1/login", VALID_PARAMETER_CODE, true);
+    }
+
+    public String post(String url, Object object, boolean isReturnResponse) throws IOException {
         if (isReturnResponse) {
-            try (Response response = client.newCall(post(url, telAndCode)).execute()) {
+            try (Response response = client.newCall(post(url, object)).execute()) {
                 String setCookie = response.headers("Set-Cookie")
                         .stream()
                         .filter((cookie) -> cookie.contains("JSESSIONID"))
@@ -50,32 +63,49 @@ public class HttpUtils {
         }
     }
 
-    public Request post(String url, TelAndCode telAndCode) throws JsonProcessingException {
-        RequestBody body = RequestBody.create(getJson(telAndCode), JSON);
-        Request request = new Request.Builder()
+    public Request post(String url, Object object) throws JsonProcessingException {
+        RequestBody body = RequestBody.create(getJson(object), JSON);
+        return new Request.Builder()
                 .url(getUrl(url))
                 .post(body)
                 .build();
-        return request;
     }
 
-    private String getJson(TelAndCode object) throws JsonProcessingException {
+    private String getJson(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
 
-    public void post(String url, TelAndCode telAndCode, ResponseAndAssertion assertion) throws IOException {
-        Request request = post(url, telAndCode);
+    public void post(String url, Object object, ResponseAndAssertion assertion) throws IOException {
+        Request request = post(url, object);
         try (Response response = client.newCall(request).execute()) {
             assertion.assertResult(response);
         }
     }
 
+    public Request post(String url, Object object, String cookie,ResponseAndAssertion assertion) throws IOException {
+        RequestBody body = RequestBody.create(getJson(object), JSON);
+        Request request = new Request.Builder()
+                .url(getUrl(url))
+                .post(body)
+                .addHeader("Cookie", cookie)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            assertion.assertResult(response);
+        }
+        return request;
+    }
+
+
     public LoginResponse get(Request request) throws IOException {
         try (Response response = client.newCall(request).execute()) {
             String json = Objects.requireNonNull(response.body()).string();
 
-            return !json.equals("") ? objectMapper.readValue(json, LoginResponse.class) : null;
+            return !json.equals("") ? getLoginResponse(json) : null;
         }
+    }
+
+    protected LoginResponse getLoginResponse(String json) throws JsonProcessingException {
+        return objectMapper.readValue(json, LoginResponse.class);
     }
 
     public LoginResponse get(String url) throws IOException {
@@ -96,9 +126,6 @@ public class HttpUtils {
     interface ResponseAndAssertion {
         void assertResult(Response response) throws IOException;
     }
-
-    @Autowired
-    private Environment environment;
 
     public String getUrl(String apiName) {
         // 获取集成测试的端口号

@@ -21,7 +21,6 @@ public class UserLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         System.out.println("pre");
-//        String s = request.getServletPath();
         System.out.println(request.getServletPath());
         if (request.getServletPath().equals("/api/v1/status")) {
             Object tel = SecurityUtils.getSubject().getPrincipal();

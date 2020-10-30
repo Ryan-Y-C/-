@@ -22,12 +22,12 @@ public class GoodsService {
 
     public Goods createdGoods(Goods goods) {
 
-        Shop shop = shopDao.findShopById(goods.getShopId());
-        if (Objects.equals(UserContext.getCurrentUser().getId(), shop.getOwnerUserId())) {
+//        Shop shop = shopDao.findShopById(goods.getShopId());
             return goodsDao.insertGoods(goods);
-        } else {
-            throw new NotAuthorizedForShopException("无权访问");
-        }
+//        if (Objects.equals(UserContext.getCurrentUser().getId(), shop.getOwnerUserId())) {
+//        } else {
+//            throw new NotAuthorizedForShopException("无权访问");
+//        }
     }
 
     public Goods deleteGoodsById(Long goodsId) {
