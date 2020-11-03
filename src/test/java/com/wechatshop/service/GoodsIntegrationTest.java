@@ -45,10 +45,4 @@ public class GoodsIntegrationTest extends HttpUtils {
 
     }
 
-    @Test
-    public void testDeleteGoods() {
-
-    }
-
-
 }

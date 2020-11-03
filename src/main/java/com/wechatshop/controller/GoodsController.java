@@ -1,7 +1,6 @@
 package com.wechatshop.controller;
 
 
-import com.wechatshop.dao.GoodsDao;
 import com.wechatshop.entity.MessageResponse;
 import com.wechatshop.entity.PageResponse;
 import com.wechatshop.entity.Response;
@@ -34,7 +33,21 @@ public class GoodsController {
         } catch (GoodsService.NotAuthorizedForShopException e) {
             httpServletResponse.setStatus(SC_FORBIDDEN);
             return MessageResponse.of("Unauthorized");
-        } catch (GoodsDao.ResourceNotFoundException e) {
+        } catch (GoodsService.ResourceNotFoundException e) {
+            httpServletResponse.setStatus(SC_NOT_FOUND);
+            return MessageResponse.of(e.getMessage());
+        }
+    }
+
+    public Object updateGoods(Goods goods, HttpServletResponse httpServletResponse) {
+        try {
+            Goods updateGoods = goodsService.updateGoods(goods);
+            httpServletResponse.setStatus(SC_OK);
+            return Response.of(updateGoods);
+        } catch (GoodsService.NotAuthorizedForShopException e) {
+            httpServletResponse.setStatus(SC_FORBIDDEN);
+            return MessageResponse.of("Unauthorized");
+        } catch (GoodsService.ResourceNotFoundException e) {
             httpServletResponse.setStatus(SC_NOT_FOUND);
             return MessageResponse.of(e.getMessage());
         }
@@ -53,11 +66,13 @@ public class GoodsController {
             return MessageResponse.of("Unauthorized");
         }
     }
+
     @GetMapping("/goods")
-    public @ResponseBody PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
-                          @RequestParam("pageSize")Integer pageSize,
-                          @RequestParam(value = "shopId",required = false)Integer shopId){
-       return goodsService.getGoods(pageNum,pageSize,shopId);
+    public @ResponseBody
+    PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
+                                 @RequestParam("pageSize") Integer pageSize,
+                                 @RequestParam(value = "shopId", required = false) Integer shopId) {
+        return goodsService.getGoods(pageNum, pageSize, shopId);
 
     }
 

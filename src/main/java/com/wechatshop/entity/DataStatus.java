@@ -1,5 +1,9 @@
 package com.wechatshop.entity;
 
-public class DataStatus {
-    public static final String DELETE_STATUS="deleted";
+public enum DataStatus {
+    OK(),
+    DELETED();
+    public String getName(){
+        return name().toLowerCase();
+    }
 }

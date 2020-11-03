@@ -8,6 +8,18 @@ public class PageResponse<T> {
     private int totalPage;
     private List<T> data;
 
+    public PageResponse() {
+    }
+
+    public static <T> PageResponse<T> pageData(int pageNum, int pageSize, int totalPage, List<T> data) {
+        PageResponse<T> pageResponse = new PageResponse<>();
+        pageResponse.setPageNum(pageNum);
+        pageResponse.setPageSize(pageSize);
+        pageResponse.setTotalPage(totalPage);
+        pageResponse.setData(data);
+        return pageResponse;
+    }
+
     public int getPageNum() {
         return pageNum;
     }
