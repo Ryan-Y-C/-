@@ -82,7 +82,7 @@ public class HttpUtils {
         }
     }
 
-    public Request post(String url, Object object, String cookie,ResponseAndAssertion assertion) throws IOException {
+    public Request post(String url, Object object, String cookie, ResponseAndAssertion assertion) throws IOException {
         RequestBody body = RequestBody.create(getJson(object), JSON);
         Request request = new Request.Builder()
                 .url(getUrl(url))

@@ -22,4 +22,8 @@ public class ShopDao {
             return shopMapper.selectByPrimaryKey(shopId);
         }
     }
+
+    public int countAll() {
+        return 0;
+    }
 }

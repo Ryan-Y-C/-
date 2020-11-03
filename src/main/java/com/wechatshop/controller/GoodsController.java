@@ -3,6 +3,7 @@ package com.wechatshop.controller;
 
 import com.wechatshop.dao.GoodsDao;
 import com.wechatshop.entity.MessageResponse;
+import com.wechatshop.entity.PageResponse;
 import com.wechatshop.entity.Response;
 import com.wechatshop.generator.Goods;
 import com.wechatshop.service.GoodsService;
@@ -51,6 +52,13 @@ public class GoodsController {
             httpServletResponse.setStatus(SC_FORBIDDEN);
             return MessageResponse.of("Unauthorized");
         }
+    }
+    @GetMapping("/goods")
+    public @ResponseBody PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
+                          @RequestParam("pageSize")Integer pageSize,
+                          @RequestParam(value = "shopId",required = false)Integer shopId){
+       return goodsService.getGoods(pageNum,pageSize,shopId);
+
     }
 
     private void clean(Goods goods) {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.WechatshopApplication;
 import com.wechatshop.generator.Goods;
-import okhttp3.Request;
 import okhttp3.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,19 +33,15 @@ public class GoodsIntegrationTest extends HttpUtils {
         goods.setStock(10);
         goods.setShopId(1L);
         //接受url goods 返回json字符串
-        post("/api/v1/goods", goods, setCookie, new ResponseAndAssertion() {
-            @Override
-            public void assertResult(Response response) throws IOException {
-                Assertions.assertEquals(SC_CREATED, response.code());
-                //通过响应body获取Goods对象
-                ObjectMapper objectMapper = new ObjectMapper();
-                com.wechatshop.entity.Response<Goods> goodsResponse =
-                        objectMapper.readValue(response.body().string(), new TypeReference<com.wechatshop.entity.Response<Goods>>() {
-                        });
-                Assertions.assertEquals("肥皂", goodsResponse.getData().getName());
-            }
+        post("/api/v1/goods", goods, setCookie, response -> {
+            Assertions.assertEquals(SC_CREATED, response.code());
+            //通过响应body获取Goods对象
+            ObjectMapper objectMapper = new ObjectMapper();
+            com.wechatshop.entity.Response<Goods> goodsResponse =
+                    objectMapper.readValue(response.body().string(), new TypeReference<com.wechatshop.entity.Response<Goods>>() {
+                    });
+            Assertions.assertEquals("肥皂", goodsResponse.getData().getName());
         });
-
 
     }
 
