@@ -1,6 +1,7 @@
 package com.wechatshop.service;
 
 import com.wechatshop.entity.DataStatus;
+import com.wechatshop.entity.HttpException;
 import com.wechatshop.entity.PageResponse;
 import com.wechatshop.generator.*;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -55,7 +57,8 @@ class GoodsServiceTest {
     @Test
     void createGoodsFailedIfUserIsNotOwner() {
         when(shop.getOwnerUserId()).thenReturn(2L);
-        assertThrows(GoodsService.NotAuthorizedForShopException.class, () -> goodsService.createdGoods(goods));
+        HttpException thrownException = assertThrows(HttpException.class, () -> goodsService.createdGoods(goods));
+        assertEquals(HttpStatus.FORBIDDEN.value(), thrownException.getStatusCode());
     }
 
     @Test
@@ -63,16 +66,16 @@ class GoodsServiceTest {
         long goodsToBeDeleted = 123L;
         when(shop.getOwnerUserId()).thenReturn(1L);
         when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(null);
-        assertThrows(GoodsService.ResourceNotFoundException.class, () -> goodsService.deleteGoodsById(goodsToBeDeleted));
-
+        HttpException thrownException = assertThrows(HttpException.class, () -> goodsService.deleteGoodsById(goodsToBeDeleted));
+        assertEquals(HttpStatus.NOT_FOUND.value(), thrownException.getStatusCode());
     }
 
     @Test
     void deleteGoodsThrowExceptionIfUserIsNotOwner() {
         long goodsToBeDeleted = 123L;
         when(shop.getOwnerUserId()).thenReturn(2L);
-        assertThrows(GoodsService.NotAuthorizedForShopException.class, () -> goodsService.deleteGoodsById(goodsToBeDeleted));
-
+        HttpException thrownException = assertThrows(HttpException.class, () -> goodsService.deleteGoodsById(goodsToBeDeleted));
+        assertEquals(HttpStatus.FORBIDDEN.value(), thrownException.getStatusCode());
     }
 
     @Test

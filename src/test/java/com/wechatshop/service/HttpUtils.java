@@ -3,6 +3,7 @@ package com.wechatshop.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.entity.LoginResponse;
+import com.wechatshop.generator.User;
 import okhttp3.*;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
@@ -42,11 +43,25 @@ public class HttpUtils {
         flyway.migrate();
     }
 
-    protected String loginAndGetCookie() throws IOException {
+    UserLoginResponse loginAndGetCookie() throws IOException {
         //注册
-        post("/api/v1/code", VALID_PARAMETER, response -> Assertions.assertEquals(HTTP_OK, response.code()));
+        post("/api/v1/code", VALID_PARAMETER,
+                response -> Assertions.assertEquals(HTTP_OK, response.code()));
         //登录并获取Cookie
-        return post("/api/v1/login", VALID_PARAMETER_CODE, true);
+        String cookie = post("/api/v1/login", VALID_PARAMETER_CODE, true);
+        LoginResponse loginResponse = get(cookie, "/api/v1/status");
+        User user = loginResponse.getUser();
+        return new UserLoginResponse(cookie, user);
+    }
+
+    Response post(String url, Object object, String cookie) throws IOException {
+        RequestBody body = RequestBody.create(getJson(object), JSON);
+        Request request = new Request.Builder()
+                .url(getUrl(url))
+                .post(body)
+                .addHeader("Cookie", cookie)
+                .build();
+        return client.newCall(request).execute();
     }
 
     public String post(String url, Object object, boolean isReturnResponse) throws IOException {
@@ -60,6 +75,24 @@ public class HttpUtils {
             }
         } else {
             return null;
+        }
+    }
+
+    public static class UserLoginResponse {
+        private String cookie;
+        private User user;
+
+        public UserLoginResponse(String cookie, User user) {
+            this.cookie = cookie;
+            this.user = user;
+        }
+
+        public String getCookie() {
+            return cookie;
+        }
+
+        public User getUser() {
+            return user;
         }
     }
 
@@ -130,5 +163,14 @@ public class HttpUtils {
     public String getUrl(String apiName) {
         // 获取集成测试的端口号
         return "http://localhost:" + environment.getProperty("local.server.port") + apiName;
+    }
+
+    Response delete(String url, String cookie) throws IOException {
+        Request request = new Request.Builder()
+                .addHeader("Cookie", cookie)
+                .delete()
+                .url(getUrl(url))
+                .build();
+        return client.newCall(request).execute();
     }
 }

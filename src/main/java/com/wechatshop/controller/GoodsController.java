@@ -1,6 +1,7 @@
 package com.wechatshop.controller;
 
 
+import com.wechatshop.entity.HttpException;
 import com.wechatshop.entity.MessageResponse;
 import com.wechatshop.entity.PageResponse;
 import com.wechatshop.entity.Response;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.http.HTTPException;
 import java.util.Date;
 
 import static javax.servlet.http.HttpServletResponse.*;
@@ -30,11 +32,8 @@ public class GoodsController {
             Goods goods = goodsService.deleteGoodsById(goodsId);
             httpServletResponse.setStatus(SC_NO_CONTENT);
             return Response.of(goods);
-        } catch (GoodsService.NotAuthorizedForShopException e) {
-            httpServletResponse.setStatus(SC_FORBIDDEN);
-            return MessageResponse.of("Unauthorized");
-        } catch (GoodsService.ResourceNotFoundException e) {
-            httpServletResponse.setStatus(SC_NOT_FOUND);
+        } catch (HttpException e) {
+            httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of(e.getMessage());
         }
     }
@@ -44,11 +43,8 @@ public class GoodsController {
             Goods updateGoods = goodsService.updateGoods(goods);
             httpServletResponse.setStatus(SC_OK);
             return Response.of(updateGoods);
-        } catch (GoodsService.NotAuthorizedForShopException e) {
-            httpServletResponse.setStatus(SC_FORBIDDEN);
-            return MessageResponse.of("Unauthorized");
-        } catch (GoodsService.ResourceNotFoundException e) {
-            httpServletResponse.setStatus(SC_NOT_FOUND);
+        } catch (HttpException e) {
+            httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of(e.getMessage());
         }
     }
@@ -61,8 +57,8 @@ public class GoodsController {
             Goods goodsResponse = goodsService.createdGoods(goods);
             httpServletResponse.setStatus(SC_CREATED);
             return Response.of(goodsResponse);
-        } catch (GoodsService.NotAuthorizedForShopException e) {
-            httpServletResponse.setStatus(SC_FORBIDDEN);
+        } catch (HTTPException e) {
+            httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of("Unauthorized");
         }
     }

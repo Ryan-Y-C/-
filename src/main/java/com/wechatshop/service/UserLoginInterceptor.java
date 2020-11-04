@@ -22,13 +22,14 @@ public class UserLoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         System.out.println("pre");
         System.out.println(request.getServletPath());
-        if (request.getServletPath().equals("/api/v1/status")) {
-            Object tel = SecurityUtils.getSubject().getPrincipal();
-            if (tel != null) {
-                //当登录时获取数据库存储的用户并且将该用户插入userContext
-                userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
-            }
+        Object tel = SecurityUtils.getSubject().getPrincipal();
+        if (tel != null) {
+            //当登录时获取数据库存储的用户并且将该用户插入userContext
+            userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
         }
+//        if (request.getServletPath().equals("/api/v1/status")) {
+//
+//        }
 
         return true;
     }

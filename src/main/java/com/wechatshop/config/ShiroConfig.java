@@ -51,7 +51,6 @@ public class ShiroConfig implements WebMvcConfigurer {
         pattern.put("/api/v1/login", "anon");
         pattern.put("/api/v1/status", "anon");
         pattern.put("/api/v1/logout", "anon");
-        pattern.put("/api/v1/goods", "anon");
         //非匿名进行拦截
         pattern.put("/**", "authc");
 

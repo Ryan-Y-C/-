@@ -38,7 +38,7 @@ public class AuthIntegrationTest extends HttpUtils {
         Assertions.assertFalse(notLoginResponse.isLogin());
 
         //登录并获取Cookie
-        String setCookie = loginAndGetCookie();
+        String setCookie = loginAndGetCookie().getCookie();
         //查看登录状态
         LoginResponse loginResponse = get(setCookie, "/api/v1/status");
         Assertions.assertTrue(loginResponse.isLogin());
