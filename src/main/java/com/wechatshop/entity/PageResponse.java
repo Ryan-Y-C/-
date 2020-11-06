@@ -11,6 +11,14 @@ public class PageResponse<T> {
     public PageResponse() {
     }
 
+    public static <T> PageResponse<T> of(int id, int pageNum, int pageSize) {
+        PageResponse<T> pageResponse = new PageResponse<>();
+        pageResponse.setPageNum(pageNum);
+        pageResponse.setPageSize(pageSize);
+        return pageResponse;
+
+    }
+
     public static <T> PageResponse<T> pageData(int pageNum, int pageSize, int totalPage, List<T> data) {
         PageResponse<T> pageResponse = new PageResponse<>();
         pageResponse.setPageNum(pageNum);

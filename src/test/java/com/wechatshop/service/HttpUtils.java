@@ -1,6 +1,7 @@
 package com.wechatshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.entity.LoginResponse;
 import com.wechatshop.generator.User;
@@ -154,6 +155,17 @@ public class HttpUtils {
                 .url(getUrl(url))
                 .build();
         return get(request);
+    }
+
+    public <T> T getPageResponse(String setCookie, String url, TypeReference<T> typeReference) throws IOException {
+        Request request = new Request.Builder()
+                .addHeader("Cookie", setCookie)
+                .url(getUrl(url))
+                .build();
+        Response response = client.newCall(request).execute();
+        return objectMapper.readValue(response.body().string(), typeReference);
+//        try () {
+//        }
     }
 
     interface ResponseAndAssertion {

@@ -6,12 +6,18 @@
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
+    <typeAliases>
+        <typeAlias type="com.wechatshop.entity.ShoppingCartData" alias="ShoppingCartData"></typeAlias>
+        <typeAlias type="com.wechatshop.entity.ShoppingCartGoods" alias="ShoppingCartGoods"></typeAlias>
+        <typeAlias type="com.wechatshop.generator.Shop" alias="Shop"></typeAlias>
+    </typeAliases>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3307/wechatshop?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;nullCatalogMeansCurrent=true"/>
+                <property name="url"
+                          value="jdbc:mysql://localhost:3307/wechatshop?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;nullCatalogMeansCurrent=true"/>
                 <property name="username" value="root"/>
                 <property name="password" value="123456"/>
             </dataSource>
@@ -23,5 +29,6 @@
         <mapper resource="db/mybatis/OrderMapper.xml"/>
         <mapper resource="db/mybatis/ShoppingCartMapper.xml"/>
         <mapper resource="db/mybatis/ShopMapper.xml"/>
+        <mapper resource="db/mybatis/ShoppingCartQuery.xml"/>
     </mappers>
 </configuration>

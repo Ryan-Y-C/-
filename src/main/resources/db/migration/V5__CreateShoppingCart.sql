@@ -7,5 +7,4 @@ create table shopping_cart
     STATUS     VARCHAR(16),
     CREATED_AT TIMESTAMP NOT NULL DEFAULT NOW(),
     UPDATED_AT TIMESTAMP NOT NULL DEFAULT NOW()
-)
-
+);

@@ -23,7 +23,7 @@ public class ShopService {
     }
 
     public Shop createdShop(Shop shop, long creatorId) {
-        shop.setId(creatorId);
+        shop.setOwnerUserId(creatorId);
         Shop selectShop = shopMapper.selectByPrimaryKey(shop.getId());
         if (selectShop != null || shop.getOwnerUserId() == null) {
             throw new ShopIdExistException("商铺ID已存在");
