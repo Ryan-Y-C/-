@@ -1,7 +1,6 @@
 package com.wechatshop.controller;
 
-import com.wechatshop.entity.PageResponse;
-import com.wechatshop.entity.ShoppingCartData;
+import com.wechatshop.entity.*;
 import com.wechatshop.service.ShoppingCartService;
 import com.wechatshop.service.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,12 @@ public class ShoppingCartController {
 
 
     @PostMapping("/shoppingCart")
-    public void addToShopingCart(@RequestBody AddToShoppingCartItem request) {
-
+    public Object addToShopingCart(@RequestBody AddToShoppingCartRequest request) {
+        try {
+            return Response.of(shoppingCartService.addToShoppingCart(request));
+        } catch (HttpException e) {
+            return MessageResponse.of(e.getMessage());
+        }
     }
 
 
@@ -45,7 +48,9 @@ public class ShoppingCartController {
     }
 
     public static class AddToShoppingCartItem {
+        //添加商品的id
         long id;
+        //添加商品的数量
         int number;
 
         public int getNumber() {

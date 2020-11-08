@@ -1,22 +1,35 @@
 package com.wechatshop.service;
 
+import com.wechatshop.controller.ShoppingCartController;
 import com.wechatshop.dao.ShoppingCartQueryMapper;
-import com.wechatshop.entity.PageResponse;
-import com.wechatshop.entity.ShoppingCartData;
-import com.wechatshop.entity.ShoppingCartGoods;
+import com.wechatshop.entity.*;
+import com.wechatshop.generator.*;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 public class ShoppingCartService {
+    private Logger logger = LoggerFactory.getLogger(ShoppingCartService.class);
     private ShoppingCartQueryMapper shoppingCartQueryMapper;
+    private GoodsMapper goodsMapper;
+    private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    public ShoppingCartService(ShoppingCartQueryMapper shoppingCartQueryMapper) {
+    public ShoppingCartService(ShoppingCartQueryMapper shoppingCartQueryMapper, GoodsMapper goodsMapper, SqlSessionFactory sqlSessionFactory) {
         this.shoppingCartQueryMapper = shoppingCartQueryMapper;
+        this.goodsMapper = goodsMapper;
+        this.sqlSessionFactory = sqlSessionFactory;
     }
 
     public PageResponse<ShoppingCartData> getShoppingCartOfUser(Long userId, int pageNum, int pageSize) {
@@ -28,11 +41,11 @@ public class ShoppingCartService {
         List<ShoppingCartData> pageData =
                 shoppingCartQueryMapper.selectShoppingCartDataByUserId(userId, pageSize, offset)
                         .stream()
-                        .collect(Collectors.groupingBy(shoppingCartData -> shoppingCartData.getShop().getId()))
+                        .collect(groupingBy(shoppingCartData -> shoppingCartData.getShop().getId()))
                         .values()
                         .stream()
                         .map(this::merge)
-                        .collect(Collectors.toList());
+                        .collect(toList());
         return PageResponse.pageData(pageNum, pageSize, totalPage, pageData);
     }
 
@@ -41,8 +54,59 @@ public class ShoppingCartService {
         result.setShop(goodsOfSameShop.get(0).getShop());
         List<ShoppingCartGoods> goods = goodsOfSameShop
                 .stream()
-                .map(ShoppingCartData::getGoods).flatMap(List::stream).collect(Collectors.toList());
+                .map(ShoppingCartData::getGoods).flatMap(List::stream).collect(toList());
         result.setGoods(goods);
+        return result;
+    }
+
+    public ShoppingCartData addToShoppingCart(ShoppingCartController.AddToShoppingCartRequest request) {
+        //获取商品列表中每个商品id
+        List<Long> goodsId = request.getGoods().stream()
+                .map(ShoppingCartController.AddToShoppingCartItem::getId)
+                .collect(toList());
+
+        if (goodsId.isEmpty()) {
+            throw HttpException.badRequest("商品id为空");
+        }
+
+        GoodsExample example = new GoodsExample();
+        example.createCriteria().andIdIn(goodsId);
+        //通过商品id获取所有商品
+        List<Goods> goods = goodsMapper.selectByExample(example);
+        if (goods.stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
+            logger.debug("非法请求：{}{}", goodsId, goods);
+            throw HttpException.badRequest("商品id非法");
+        }
+        Map<Long, Goods> idToGoodsMap = goods.stream().collect(toMap(Goods::getId, x -> x));
+
+        //将请求的添加商品的id和数量转换成ShoppingCart
+        List<ShoppingCart> shoppingCartRows = request.getGoods()
+                .stream()
+                .map(item -> toShoppingCartRow(item, idToGoodsMap))
+                .collect(toList());
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
+            ShoppingCartMapper mapper = sqlSession.getMapper(ShoppingCartMapper.class);
+            shoppingCartRows.forEach(mapper::insert);
+            sqlSession.commit();
+        }
+        //通过店铺id获取所有该用户当前店铺所有的商品
+        return merge(shoppingCartQueryMapper.selectShoppingCartDataByUserIdShopId(UserContext.getCurrentUser().getId(), goods.get(0).getShopId()));
+    }
+
+
+    private ShoppingCart toShoppingCartRow(ShoppingCartController.AddToShoppingCartItem item, Map<Long, Goods> idToGoodsMap) {
+        Goods goods = idToGoodsMap.get(item.getId());
+        if (goods == null) {
+            return null;
+        }
+        ShoppingCart result = new ShoppingCart();
+        result.setGoodsId(item.getId());
+        result.setNumber(item.getNumber());
+        result.setUserId(UserContext.getCurrentUser().getId());
+        result.setShopId(goods.getShopId());
+        result.setStatus(DataStatus.OK.getName().toLowerCase());
+        result.setCreatedAt(new Date());
+        result.setUpdatedAt(new Date());
         return result;
     }
 }

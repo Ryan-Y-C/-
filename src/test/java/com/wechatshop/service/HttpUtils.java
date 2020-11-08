@@ -164,8 +164,6 @@ public class HttpUtils {
                 .build();
         Response response = client.newCall(request).execute();
         return objectMapper.readValue(response.body().string(), typeReference);
-//        try () {
-//        }
     }
 
     interface ResponseAndAssertion {
