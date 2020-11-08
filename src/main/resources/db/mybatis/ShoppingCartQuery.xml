@@ -61,6 +61,7 @@
 
         WHERE SHOPPING_CART.SHOP_ID = #{shopId}
           AND SHOPPING_CART.USER_ID = #{userId}
+          and SHOPPING_CART.STATUS = 'ok'
     </select>
     <resultMap id="getShoppingCartResultMap" type="ShoppingCartData">
         <association property="shop" javaType="Shop">
@@ -86,4 +87,11 @@
             <result property="status" column="GOODS_STATUS"/>
         </collection>
     </resultMap>
+    <delete id="deleteShoppingCart" parameterType="Map">
+        update shopping_cart
+        set STATUS='deleted',
+            UPDATED_AT =now()
+        where USER_ID = #{userId}
+          and GOODS_ID = #{goodsId}
+    </delete>
 </mapper>

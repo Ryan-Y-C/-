@@ -20,8 +20,17 @@ public class ShoppingCartController {
 
 
     @GetMapping("/shoppingCart")
-    public PageResponse<ShoppingCartData> getShopCart(@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
+    public PageResponse<ShoppingCartData> getShoppingCart(@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
         return shoppingCartService.getShoppingCartOfUser(UserContext.getCurrentUser().getId(), pageNum, pageSize);
+    }
+
+    @DeleteMapping("/shoppingCart/{goodsId}")
+    public Object deleteGoodsInShoppingCart(@PathVariable("goodsId") long goodsId) {
+        try {
+            return Response.of(shoppingCartService.deleteShoppingCartByGoodsId(goodsId, UserContext.getCurrentUser().getId()));
+        } catch (HttpException e) {
+            return MessageResponse.of(e.getMessage());
+        }
     }
 
 

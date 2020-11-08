@@ -73,4 +73,20 @@ public class ShoppingCartIntegrationTest extends HttpUtils {
         Assertions.assertEquals(Arrays.asList(100, 2), shoppingCartData.getData().getGoods().stream().map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
         Assertions.assertTrue(shoppingCartData.getData().getGoods().stream().allMatch(shoppingCartGoods -> shoppingCartGoods.getShopId() == 1L));
     }
+
+    @Test
+    public void canDeleteShoppingCartData() throws IOException {
+        userLoginResponse = loginAndGetCookie();
+        String setCookie = userLoginResponse.getCookie();
+        Response deleteResponse = delete("/api/v1/shoppingCart/5", setCookie);
+        com.wechatshop.entity.Response<ShoppingCartData> shoppingCartData = objectMapper.readValue(deleteResponse.body().string(), new TypeReference<com.wechatshop.entity.Response<ShoppingCartData>>() {
+        });
+        Assertions.assertEquals(1, shoppingCartData.getData().getGoods().size());
+
+        ShoppingCartGoods goods = shoppingCartData.getData().getGoods().get(0);
+
+        Assertions.assertEquals(2L, goods.getShopId());
+        Assertions.assertEquals(4L, goods.getId());
+        Assertions.assertEquals(200, goods.getNumber());
+    }
 }

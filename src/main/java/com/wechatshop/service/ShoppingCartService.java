@@ -90,7 +90,7 @@ public class ShoppingCartService {
             sqlSession.commit();
         }
         //通过店铺id获取所有该用户当前店铺所有的商品
-        return merge(shoppingCartQueryMapper.selectShoppingCartDataByUserIdShopId(UserContext.getCurrentUser().getId(), goods.get(0).getShopId()));
+        return getLatestShoppingCartDataByUserIdShopId(UserContext.getCurrentUser().getId(), goods.get(0).getShopId());
     }
 
 
@@ -108,5 +108,19 @@ public class ShoppingCartService {
         result.setCreatedAt(new Date());
         result.setUpdatedAt(new Date());
         return result;
+    }
+
+    public Object deleteShoppingCartByGoodsId(long goodsId, long userId) {
+        Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
+        if (goods == null) {
+            return HttpException.notFound("未找到该商品:" + goodsId);
+        }
+        shoppingCartQueryMapper.deleteShoppingCart(goodsId, userId);
+        //
+        return getLatestShoppingCartDataByUserIdShopId(goods.getShopId(), userId);
+    }
+
+    private ShoppingCartData getLatestShoppingCartDataByUserIdShopId(long shopId, long userId) {
+        return merge(shoppingCartQueryMapper.selectShoppingCartDataByUserIdShopId(userId, shopId));
     }
 }
