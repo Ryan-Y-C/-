@@ -8,4 +8,19 @@ spring:
     password: 123456
   main:
     allow-bean-definition-overriding: true
+  application:
+    name: test-wechatshop
+wechatshop:
+  orderservice:
+    version: 1.0.0
+    url: dubbo://127.0.0.1:12345
+
+dubbo:
+  scan:
+    base-packages: com.wechatshop.mock
+  protocol:
+    name: dubbo
+    port: 12345
+  registry:
+    address: zookeeper://127.0.0.1:2181
 #    web-application-type: none
