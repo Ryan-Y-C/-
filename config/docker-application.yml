@@ -1,24 +1,26 @@
 mybatis:
   config-location: classpath:db/mybatis/config.xml
 
+server:
+  port : 8081
+
 spring:
   application:
     name: wechatshop
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+    url: jdbc:mysql://192.168.0.104:3307docke/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
     username: root
     password: 123456
   main:
     allow-bean-definition-overriding: true
-
 
 wechatshop:
   orderservice:
     version: 1.0.0
     url: ""
   redis:
-    host: 127.0.0.1:6379
+    host: 192.168.0.104:6379
 dubbo:
   scan:
     base-packages: com.wechatshop.orderservice
@@ -26,5 +28,5 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: zookeeper://127.0.0.1:2181
+    address: zookeeper://192.168.0.104:2181
 

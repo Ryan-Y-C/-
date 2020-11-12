@@ -5,13 +5,15 @@ import com.wechatshop.service.UserLoginInterceptor;
 import com.wechatshop.service.UserService;
 import com.wechatshop.service.VerificationCodeCheckService;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -25,6 +27,9 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig implements WebMvcConfigurer {
     private UserService userService;
+
+    @Value("wachatshop.redis.host")
+    private String host;
 
     @Autowired
     public ShiroConfig(UserService userService) {
@@ -64,15 +69,25 @@ public class ShiroConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SessionsSecurityManager securityManager(ShiroRealm shiroRealm) {
+    public SessionsSecurityManager securityManager(ShiroRealm shiroRealm, RedisCacheManager redisCacheManager) {
         //提供session和coke
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         securityManager.setRealm(shiroRealm);
-        securityManager.setCacheManager(new MemoryConstrainedCacheManager());
+        securityManager.setCacheManager(redisCacheManager);
         securityManager.setSessionManager(new DefaultWebSessionManager());
         SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
+    }
+
+
+    @Bean
+    public RedisCacheManager redisCacheManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(host);
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager);
+        return redisCacheManager;
     }
 
     @Bean

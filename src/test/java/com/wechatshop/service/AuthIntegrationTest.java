@@ -14,7 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 
 import static com.wechatshop.service.TelVerificitonServiceTest.*;
-import static java.net.HttpURLConnection.*;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = WechatshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -53,7 +54,7 @@ public class AuthIntegrationTest extends HttpUtils {
         Assertions.assertEquals(VALID_PARAMETER_CODE.getTel(), loginResponse.getUser().getTel());
 
         //携带cookie注销登录
-        get(setCookie, "/api/v1/logout");
+        postLogout(setCookie, "/api/v1/logout");
         //查看注销后登录状态
         Assertions.assertFalse(get("/api/v1/status").isLogin());
     }

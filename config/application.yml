@@ -1,6 +1,9 @@
 mybatis:
   config-location: classpath:db/mybatis/config.xml
 
+server:
+  port : 8081
+
 spring:
   application:
     name: wechatshop
@@ -11,7 +14,6 @@ spring:
     password: 123456
   main:
     allow-bean-definition-overriding: true
-
 
 wechatshop:
   orderservice:

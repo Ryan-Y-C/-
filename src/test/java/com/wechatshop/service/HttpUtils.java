@@ -157,6 +157,16 @@ public class HttpUtils {
         return get(request);
     }
 
+    public void postLogout(String setCookie, String url) throws IOException {
+        Request request = new Request.Builder()
+                .addHeader("Cookie", setCookie)
+                .url(getUrl(url))
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            System.out.println(response.code());
+        }
+    }
+
     public <T> T getPageResponse(String setCookie, String url, TypeReference<T> typeReference) throws IOException {
         Request request = new Request.Builder()
                 .addHeader("Cookie", setCookie)
@@ -165,6 +175,7 @@ public class HttpUtils {
         Response response = client.newCall(request).execute();
         return objectMapper.readValue(response.body().string(), typeReference);
     }
+
 
     interface ResponseAndAssertion {
         void assertResult(Response response) throws IOException;

@@ -44,7 +44,7 @@ public class AuthController {
         System.out.println(token.toString());
 
     }
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public void logout() {
         SecurityUtils.getSubject().logout();
     }

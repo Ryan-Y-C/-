@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.http.HTTPException;
 import java.util.Date;
 
 import static javax.servlet.http.HttpServletResponse.*;
@@ -19,7 +18,7 @@ import static javax.servlet.http.HttpServletResponse.*;
 @RestController
 @RequestMapping("/api/v1")
 public class GoodsController {
-    private final GoodsService goodsService;
+    private GoodsService goodsService;
 
     @Autowired
     public GoodsController(GoodsService goodsService) {
@@ -38,9 +37,10 @@ public class GoodsController {
         }
     }
 
-    public Object updateGoods(Goods goods, HttpServletResponse httpServletResponse) {
+    @RequestMapping(value = "/goods/{id}", method = {RequestMethod.POST, RequestMethod.PATCH})
+    public Object updateGoods(@PathVariable("id") long id, @RequestBody Goods goods, HttpServletResponse httpServletResponse) {
         try {
-            Goods updateGoods = goodsService.updateGoods(goods);
+            Goods updateGoods = goodsService.updateGoods(id, goods);
             httpServletResponse.setStatus(SC_OK);
             return Response.of(updateGoods);
         } catch (HttpException e) {
@@ -57,7 +57,7 @@ public class GoodsController {
             Goods goodsResponse = goodsService.createdGoods(goods);
             httpServletResponse.setStatus(SC_CREATED);
             return Response.of(goodsResponse);
-        } catch (HTTPException e) {
+        } catch (HttpException e) {
             httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of("Unauthorized");
         }
