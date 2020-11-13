@@ -1,12 +1,10 @@
 package com.wechatshop.service;
 
 import com.wechatshop.WechatshopApplication;
-import com.wechatshop.api.OrderService;
 import com.wechatshop.entity.LoginResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,13 +19,6 @@ import static java.net.HttpURLConnection.HTTP_OK;
 @SpringBootTest(classes = WechatshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"spring.config.location=classpath:test-application.yml"})
 public class AuthIntegrationTest extends HttpUtils {
-    private OrderService orderService;
-
-    @Autowired
-    public AuthIntegrationTest(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
     @Test
     public void returnHTTPokWhenParameterIsCorrect() throws IOException {
         post("/api/v1/code", VALID_PARAMETER, response -> Assertions.assertEquals(HTTP_OK, response.code()));

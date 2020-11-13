@@ -1,6 +1,6 @@
 FROM java:openjdk-8u111-alpine
 
-RUN ["/bin/sh","-c","mkdir ./app"]
+RUN mkdir ./app
 
 WORKDIR /app
 

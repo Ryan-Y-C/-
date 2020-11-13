@@ -1,4 +1,3 @@
-:wq
 mybatis:
   config-location: classpath:db/mybatis/config.xml
 

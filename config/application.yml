@@ -1,9 +1,6 @@
 mybatis:
   config-location: classpath:db/mybatis/config.xml
 
-server:
-  port : 8081
-
 spring:
   application:
     name: wechatshop
