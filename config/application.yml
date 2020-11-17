@@ -1,29 +1,29 @@
-mybatis:
-  config-location: classpath:db/mybatis/config.xml
-
-spring:
-  application:
-    name: wechatshop
-  datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
-    username: root
-    password: 123456
-  main:
-    allow-bean-definition-overriding: true
-
-wechatshop:
-  orderservice:
-    version: 1.0.0
-    url: ""
-  redis:
-    host: 127.0.0.1:6379
-dubbo:
-  scan:
-    base-packages: com.wechatshop.orderservice
-  protocol:
-    name: dubbo
-    port: -1
-  registry:
-    address: zookeeper://127.0.0.1:2181
-
+#mybatis:
+#  config-location: classpath:db/mybatis/config.xml
+#
+#spring:
+#  application:
+#    name: wechatshop
+#  datasource:
+#    driverClassName: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3307/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+#    username: root
+#    password: 123456
+#  main:
+#    allow-bean-definition-overriding: true
+#
+#wechatshop:
+#  orderservice:
+#    version: 1.0.0
+#    url: ""
+#  redis:
+#    host: 127.0.0.1:6379
+#dubbo:
+#  scan:
+#    base-packages: com.wechatshop.orderservice
+#  protocol:
+#    name: dubbo
+#    port: -1
+#  registry:
+#    address: zookeeper://127.0.0.1:2181
+#

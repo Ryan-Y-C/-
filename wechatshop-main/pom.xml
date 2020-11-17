@@ -3,21 +3,36 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <groupId>com</groupId>
+        <artifactId>wechatshop-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>wechatshop-main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>wechatshop-main</name>
     <description>wechatshop-main</description>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>wechatshop-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
@@ -29,19 +44,11 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>2.7.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-dependencies-zookeeper</artifactId>
-            <version>2.7.6</version>
             <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -59,6 +66,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -70,6 +78,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring-boot-web-starter</artifactId>
@@ -82,19 +91,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.shiro</groupId>-->
-        <!--            <artifactId>shiro-core</artifactId>-->
-        <!--            <version>1.5.3</version>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.shiro</groupId>-->
-        <!--            <artifactId>shiro-spring</artifactId>-->
-        <!--            <version>1.5.3</version>-->
-        <!--        </dependency>-->
-
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
@@ -105,9 +101,7 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.13.1</version>
         </dependency>
-
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -176,7 +170,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <configLocation>../checkstyle.xml</configLocation>
+                    <configLocation>${basedir}/../checkstyle.xml</configLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <enableRulesSummary>false</enableRulesSummary>
                     <excludes>**/generator/**/*</excludes>
@@ -265,5 +259,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

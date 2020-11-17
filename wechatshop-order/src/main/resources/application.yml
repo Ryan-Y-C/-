@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: wechatshop-main
+
+wechatshop:
+  orderservice:
+    version: 0.0.1
+
+dubbo:
+  scan:
+    base-packages: com.order.service
+  registry:
+    address: zookeeper://127.0.0.1:2181
+  application:
+    name: wechatshop-order
+  url: 127.0.0.1
+  protocol:
+    name: dubbo

@@ -3,7 +3,7 @@ mybatis:
 
 spring:
   application:
-    name: wechatshop
+    name: wechatshop-main
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3307/wechatshop?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
@@ -11,20 +11,19 @@ spring:
     password: 123456
   main:
     allow-bean-definition-overriding: true
-
+server:
+  port: 8081
 
 wechatshop:
   orderservice:
-    version: 1.0.0
+    version: 0.0.1
     url: ""
   redis:
     host: 127.0.0.1:6379
+
 dubbo:
-  scan:
-    base-packages: com.wechatshop.orderservice
-  protocol:
-    name: dubbo
-    port: -1
   registry:
-    address: zookeeper://127.0.0.1:2181
+    address: zookeeper://localhost:2181
+#  consumer:
+#    check: false
 
