@@ -1,7 +1,5 @@
 package com.wechatshop.controller;
 
-import com.wechatshop.entity.HttpException;
-import com.wechatshop.entity.MessageResponse;
 import com.wechatshop.entity.PageResponse;
 import com.wechatshop.entity.ResponseData;
 import com.wechatshop.generator.Shop;
@@ -45,22 +43,14 @@ public class ShopController {
     @PatchMapping("/shop/{id}")
     public Object updateShop(@PathVariable("id") long id, @RequestBody Shop shop, HttpServletResponse response) {
         shop.setId(id);
-        try {
             response.setStatus(HttpServletResponse.SC_OK);
             return ResponseData.of(shopService.updateShop(shop, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return MessageResponse.of(e.getMessage());
-        }
+
     }
 
     @DeleteMapping("/shop/{id}")
     public Object deleteShop(@PathVariable("id") long shopId, HttpServletResponse response) {
-        try {
             return ResponseData.of(shopService.deleteShop(shopId, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            throw HttpException.forbidden(e.getMessage());
-        }
+
     }
 }
