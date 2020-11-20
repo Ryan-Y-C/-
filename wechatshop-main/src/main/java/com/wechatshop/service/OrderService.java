@@ -14,12 +14,13 @@ import com.wechatshop.generator.GoodsMapper;
 import com.wechatshop.generator.ShopMapper;
 import com.wechatshop.generator.UserMapper;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Service()
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class OrderService {
     @DubboReference(version = "${wechatshop.orderservice.version}")
     private RpcOrderService rpcOrderService;

@@ -21,12 +21,8 @@ import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
-    private OrderService orderService;
-
     @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
+    private OrderService orderService;
 
     @PostMapping("/order")
     public Object createOrder(@RequestBody OrderInfo orderInfo, HttpServletResponse httpServletResponse) {

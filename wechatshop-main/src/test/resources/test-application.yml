@@ -10,6 +10,8 @@ spring:
     allow-bean-definition-overriding: true
   application:
     name: test-wechatshop
+  aop:
+    proxy-target-clas: true
 wechatshop:
   orderservice:
     version: 0.0.1

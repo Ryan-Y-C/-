@@ -11,7 +11,8 @@ spring:
     password: 123456
   main:
     allow-bean-definition-overriding: true
-server:
+  aop:
+    proxy-target-class: true
   port: 8081
 
 wechatshop:
