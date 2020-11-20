@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,6 @@ public class OrderService {
     }
 
     public OrderResponse createOrder(OrderInfo orderInfo, Long userId) {
-        if (!deductStock(orderInfo)) {
-            throw HttpException.gone("扣减库存失败");
-        }
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(orderInfo);
         Order createOrder = createOrderViaRpc(userId, orderInfo, idToGoodsMap);
         return generateResponse(orderInfo, idToGoodsMap, createOrder);
@@ -86,28 +84,30 @@ public class OrderService {
         order.setStatus(DataStatus.PENDING.getName());
         return rpcOrderService.createOrder(orderInfo, order);
     }
-
-//    public void deductStock(OrderInfo orderInfo){
-//        for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
-//            if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
-//                LOGGER.error("扣减库存失败，商品id：" + goodsInfo.getId() + "，数量：" + goodsInfo.getNumber());
-//                throw
-//            }
-//        }
-//    }
-    public boolean deductStock(OrderInfo orderInfo) {
-        try (SqlSession session = sqlSessionFactory.openSession(false)) {
-            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
-                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
-                    LOGGER.error("扣减库存失败，商品id：" + goodsInfo.getId() + "，数量：" + goodsInfo.getNumber());
-                    session.rollback();
-                    return false;
-                }
+    //spring Transactional 遇到异常自动回滚
+    //注： Transactional不能自己调用（当前类的其他方法不能调用deductStock，除非其他类也标注Transactional注解），调用OrderService服务的类可以调用
+    @Transactional
+    public void deductStock(OrderInfo orderInfo){
+        for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
+            if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
+                LOGGER.error("扣减库存失败，商品id：" + goodsInfo.getId() + "，数量：" + goodsInfo.getNumber());
+                throw HttpException.gone("扣减库存失败");
             }
-            session.commit();
-            return true;
         }
     }
+//    public boolean deductStock(OrderInfo orderInfo) {
+//        try (SqlSession session = sqlSessionFactory.openSession(false)) {
+//            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
+//                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
+//                    LOGGER.error("扣减库存失败，商品id：" + goodsInfo.getId() + "，数量：" + goodsInfo.getNumber());
+//                    session.rollback();
+//                    return false;
+//                }
+//            }
+//            session.commit();
+//            return true;
+//        }
+//    }
 
     private GoodsWithNumber getGoodsWithNumber(GoodsInfo goodsInfo, Map<Long, Goods> idToGoodsMap) {
         GoodsWithNumber result = new GoodsWithNumber(idToGoodsMap.get(goodsInfo.getId()));
