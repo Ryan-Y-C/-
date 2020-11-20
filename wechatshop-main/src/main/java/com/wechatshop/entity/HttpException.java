@@ -16,11 +16,15 @@ public class HttpException extends RuntimeException {
     public static HttpException notFound(String message) {
         return new HttpException(HttpStatus.NOT_FOUND.value(), message);
     }
+    public static HttpException gone(String message) {
+        return new HttpException(HttpStatus.GONE.value(), message);
+    }
 
     private HttpException(int statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }
+
 
     public int getStatusCode() {
         return statusCode;

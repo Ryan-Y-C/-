@@ -1,8 +1,14 @@
-package com.wechatshop.entity;
+package com.api;
 
 public enum DataStatus {
     OK(),
-    DELETED();
+    DELETED(),
+
+    PENDING(),
+    PAID(),
+    DELIVERED(),
+    RECEIVED();
+
     public String getName(){
         return name().toLowerCase();
     }

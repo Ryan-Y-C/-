@@ -18,15 +18,28 @@
     <!-- 定义模块 -->
     <modules>
         <module>wechatshop-main</module>
-        <module>wechatshop-api</module>
         <module>wechatshop-order</module>
+        <module>wechatshop-api</module>
     </modules>
 
     <properties>
         <java.version>1.8</java.version>
         <dubbo.version>2.7.8</dubbo.version>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
@@ -46,6 +59,11 @@
                         <artifactId>slf4j-log4j12</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>2.1.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

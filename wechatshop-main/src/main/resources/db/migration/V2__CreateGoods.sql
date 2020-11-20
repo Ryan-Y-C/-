@@ -6,7 +6,7 @@ create table goods
     description varchar(1024),
     details     text,
     img_url     varchar(1024),
-    price       decimal,
+    price       bigint,
     stock       int       not null default 0,
     status      varchar(16),-- "ok" 正常 'deleted' 已经删除 逻辑删除
     created_at  timestamp not null default now(),

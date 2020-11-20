@@ -27,7 +27,7 @@ public class ShoppingCartController {
     @DeleteMapping("/shoppingCart/{goodsId}")
     public Object deleteGoodsInShoppingCart(@PathVariable("goodsId") long goodsId) {
         try {
-            return Response.of(shoppingCartService.deleteShoppingCartByGoodsId(goodsId, UserContext.getCurrentUser().getId()));
+            return ResponseData.of(shoppingCartService.deleteShoppingCartByGoodsId(goodsId, UserContext.getCurrentUser().getId()));
         } catch (HttpException e) {
             return MessageResponse.of(e.getMessage());
         }
@@ -37,7 +37,7 @@ public class ShoppingCartController {
     @PostMapping("/shoppingCart")
     public Object addToShopingCart(@RequestBody AddToShoppingCartRequest request) {
         try {
-            return Response.of(shoppingCartService.addToShoppingCart(request));
+            return ResponseData.of(shoppingCartService.addToShoppingCart(request));
         } catch (HttpException e) {
             return MessageResponse.of(e.getMessage());
         }

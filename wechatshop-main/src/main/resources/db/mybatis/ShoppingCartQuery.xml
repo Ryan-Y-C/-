@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wechatshop.dao.ShoppingCartQueryMapper">
+<mapper namespace="com.hcsp.wxshop.dao.ShoppingCartQueryMapper">
     <select id="countHowManyShopsInUserShoppingCart" resultType="int" parameterType="long">
         SELECT COUNT(DISTINCT SHOPPING_CART.SHOP_ID)
         from SHOPPING_CART
         where USER_ID = #{userId}
           AND STATUS = 'ok'
     </select>
+
     <select id="selectShoppingCartDataByUserId" resultMap="getShoppingCartResultMap" parameterType="Map">
         SELECT SHOP.ID              as SHOP_ID,
                SHOP.NAME            as SHOP_NAME,
@@ -29,13 +30,14 @@
                  FROM SHOPPING_CART
                  WHERE USER_ID = #{userId}
                    AND STATUS = 'ok'
-                 LIMIT #{limit},#{offset}
+                 LIMIT #{offset},#{limit}
              ) t1
                  JOIN SHOPPING_CART on t1.SHOP_ID = SHOPPING_CART.SHOP_ID
                  JOIN GOODS on SHOPPING_CART.GOODS_ID = GOODS.ID
                  JOIN SHOP on t1.SHOP_ID = SHOP.ID
 
         WHERE SHOPPING_CART.STATUS = 'ok'
+
     </select>
 
     <select id="selectShoppingCartDataByUserIdShopId" resultMap="getShoppingCartResultMap" parameterType="Map">
@@ -53,15 +55,15 @@
                GOODS.IMG_URL        as GOODS_IMG_URL,
                GOODS.PRICE          as GOODS_PRICE,
                SHOPPING_CART.NUMBER as GOODS_NUMBER,
+               SHOPPING_CART.STATUS as GOODS_STATUS,
                GOODS.CREATED_AT     as GOODS_CREATED_AT,
                GOODS.UPDATED_AT     as GOODS_UPDATED_AT
         FROM SHOPPING_CART
                  JOIN GOODS on SHOPPING_CART.GOODS_ID = GOODS.ID
                  JOIN SHOP on SHOPPING_CART.SHOP_ID = SHOP.ID
-
         WHERE SHOPPING_CART.SHOP_ID = #{shopId}
           AND SHOPPING_CART.USER_ID = #{userId}
-          and SHOPPING_CART.STATUS = 'ok'
+          AND SHOPPING_CART.STATUS = 'ok'
     </select>
     <resultMap id="getShoppingCartResultMap" type="ShoppingCartData">
         <association property="shop" javaType="Shop">
@@ -87,11 +89,12 @@
             <result property="status" column="GOODS_STATUS"/>
         </collection>
     </resultMap>
+
     <delete id="deleteShoppingCart" parameterType="Map">
-        update shopping_cart
-        set STATUS='deleted',
-            UPDATED_AT =now()
-        where USER_ID = #{userId}
-          and GOODS_ID = #{goodsId}
+        UPDATE SHOPPING_CART
+        SET STATUS = 'deleted', UPDATED_AT = now()
+        WHERE USER_ID = #{userId}
+          AND GOODS_ID = #{goodsId}
     </delete>
+
 </mapper>

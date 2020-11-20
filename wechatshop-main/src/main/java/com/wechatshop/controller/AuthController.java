@@ -1,12 +1,10 @@
 package com.wechatshop.controller;
 
-import com.api.rpc.RpcOrderService;
 import com.wechatshop.entity.LoginResponse;
 import com.wechatshop.entity.TelAndCode;
 import com.wechatshop.service.AuthService;
 import com.wechatshop.service.TelVerificitonService;
 import com.wechatshop.service.UserContext;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +49,10 @@ public class AuthController {
         SecurityUtils.getSubject().logout();
     }
 
-    @DubboReference(version = "${wechatshop.orderservice.version}")
-    private RpcOrderService rpcOrderService;
+//    @DubboReference(version = "${wechatshop.orderservice.version}")
+//    private RpcOrderService rpcOrderService;
     @GetMapping("/status")
     public Object loginStatus() {
-        System.out.println(rpcOrderService.sayHello("aswd"));
         if (UserContext.getCurrentUser() != null) {
             System.out.println(SecurityUtils.getSubject().getPrincipal());
             return LoginResponse.login(UserContext.getCurrentUser());

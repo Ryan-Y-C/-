@@ -8,8 +8,9 @@
     </settings>
     <typeAliases>
         <typeAlias type="com.wechatshop.entity.ShoppingCartData" alias="ShoppingCartData"></typeAlias>
-        <typeAlias type="com.wechatshop.entity.ShoppingCartGoods" alias="ShoppingCartGoods"></typeAlias>
+        <typeAlias type="com.wechatshop.entity.GoodsWithNumber" alias="ShoppingCartGoods"></typeAlias>
         <typeAlias type="com.wechatshop.generator.Shop" alias="Shop"></typeAlias>
+        <typeAlias type="com.api.data.GoodsInfo" alias="GoodsInfo"></typeAlias>
     </typeAliases>
     <environments default="development">
         <environment id="development">
@@ -26,9 +27,9 @@
     <mappers>
         <mapper resource="db/mybatis/UserMapper.xml"/>
         <mapper resource="db/mybatis/GoodsMapper.xml"/>
-        <mapper resource="db/mybatis/OrderMapper.xml"/>
         <mapper resource="db/mybatis/ShoppingCartMapper.xml"/>
         <mapper resource="db/mybatis/ShopMapper.xml"/>
         <mapper resource="db/mybatis/ShoppingCartQuery.xml"/>
+        <mapper resource="db/mybatis/GoodsStockMapper.xml"/>
     </mappers>
 </configuration>

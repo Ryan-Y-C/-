@@ -1,6 +1,16 @@
 spring:
   application:
     name: wechatshop-main
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/shop_order?useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+    username: root
+    password: 123456
+  main:
+    allow-bean-definition-overriding: true
+
+mybatis:
+  config-location: classpath:db/mybatis/config.xml
 
 wechatshop:
   orderservice:

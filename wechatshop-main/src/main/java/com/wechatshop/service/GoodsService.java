@@ -1,6 +1,6 @@
 package com.wechatshop.service;
 
-import com.wechatshop.entity.DataStatus;
+import com.api.DataStatus;
 import com.wechatshop.entity.HttpException;
 import com.wechatshop.entity.PageResponse;
 import com.wechatshop.generator.*;
@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static java.util.stream.Collectors.toMap;
 
 
 @Service()
@@ -98,5 +101,14 @@ public class GoodsService {
             goodsExample.createCriteria().andStatusEqualTo(DataStatus.OK.getName()).andShopIdEqualTo(shopId.longValue());
             return (int) goodsMapper.countByExample(goodsExample);
         }
+    }
+
+    public Map<Long, Goods> getIdToGoodsMap(List<Long> goodsId) {
+        //通过商品id获取对应的商品
+        GoodsExample example = new GoodsExample();
+        example.createCriteria().andIdIn(goodsId);
+        List<Goods> goods = goodsMapper.selectByExample(example);
+        Map<Long, Goods> idToGoodsMap = goods.stream().collect(toMap(Goods::getId, x -> x));
+        return idToGoodsMap;
     }
 }

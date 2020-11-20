@@ -20,7 +20,7 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        System.out.println("pre");
+
         System.out.println(request.getServletPath());
         Object tel = SecurityUtils.getSubject().getPrincipal();
         if (tel != null) {
@@ -39,7 +39,6 @@ public class UserLoginInterceptor implements HandlerInterceptor {
         //线程会复用
         //当线程1中保存用户A的信息，并且没有清除
         //线程1下次处理别的请求的时候会出现“串号”的情况
-        System.out.println("post");
         UserContext.setCurrentUser(null);
     }
 }

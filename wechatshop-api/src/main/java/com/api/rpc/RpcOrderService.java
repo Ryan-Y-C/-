@@ -1,4 +1,8 @@
 package com.api.rpc;
+
+import com.api.data.OrderInfo;
+import com.api.generator.Order;
+
 public interface RpcOrderService{
-    String sayHello(String name);
+    Order createOrder(OrderInfo orderInfo,Order order);
 }

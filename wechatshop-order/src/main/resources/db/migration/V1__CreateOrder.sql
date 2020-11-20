@@ -2,7 +2,7 @@ create table `order`
 (
     id              bigint primary key auto_increment,
     user_id         bigint,
-    total_price     decimal,
+    total_price     bigint,
     address         varchar(1024),
     express_company varchar(16),
     express_id      varchar(128),
@@ -14,5 +14,5 @@ create table `order_goods`
 (
     id       bigint primary key auto_increment,
     goods_id bigint,
-    number   decimal
+    number   bigint
 )

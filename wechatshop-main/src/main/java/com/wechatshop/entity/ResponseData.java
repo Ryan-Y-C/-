@@ -1,16 +1,16 @@
 package com.wechatshop.entity;
 
-public class Response<T>  {
+public class ResponseData<T>  {
     private T data;
 
-    private Response(){}
+    private ResponseData(){}
 
-    private Response(T data) {
+    private ResponseData(T data) {
         this.data = data;
     }
 
-    public static <T> Response<T> of(T data) {
-        return new Response<>(data);
+    public static <T> ResponseData<T> of(T data) {
+        return new ResponseData<>(data);
     }
 
     public T getData() {

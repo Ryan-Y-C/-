@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.entity.LoginResponse;
+
 import com.wechatshop.generator.User;
 import okhttp3.*;
 import org.flywaydb.core.Flyway;
@@ -181,7 +182,7 @@ public class HttpUtils {
         void assertResult(Response response) throws IOException;
     }
 
-    public String getUrl(String apiName) {
+    private String getUrl(String apiName) {
         // 获取集成测试的端口号
         return "http://localhost:" + environment.getProperty("local.server.port") + apiName;
     }
@@ -193,5 +194,8 @@ public class HttpUtils {
                 .url(getUrl(url))
                 .build();
         return client.newCall(request).execute();
+    }
+    <T> T getObjectMapper(String response, TypeReference<T> typeReference) throws IOException {
+        return objectMapper.readValue(response, typeReference);
     }
 }

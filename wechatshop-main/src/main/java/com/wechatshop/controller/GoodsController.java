@@ -4,7 +4,7 @@ package com.wechatshop.controller;
 import com.wechatshop.entity.HttpException;
 import com.wechatshop.entity.MessageResponse;
 import com.wechatshop.entity.PageResponse;
-import com.wechatshop.entity.Response;
+import com.wechatshop.entity.ResponseData;
 import com.wechatshop.generator.Goods;
 import com.wechatshop.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class GoodsController {
         try {
             Goods goods = goodsService.deleteGoodsById(goodsId);
             httpServletResponse.setStatus(SC_NO_CONTENT);
-            return Response.of(goods);
+            return ResponseData.of(goods);
         } catch (HttpException e) {
             httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of(e.getMessage());
@@ -42,7 +42,7 @@ public class GoodsController {
         try {
             Goods updateGoods = goodsService.updateGoods(id, goods);
             httpServletResponse.setStatus(SC_OK);
-            return Response.of(updateGoods);
+            return ResponseData.of(updateGoods);
         } catch (HttpException e) {
             httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of(e.getMessage());
@@ -56,7 +56,7 @@ public class GoodsController {
         try {
             Goods goodsResponse = goodsService.createdGoods(goods);
             httpServletResponse.setStatus(SC_CREATED);
-            return Response.of(goodsResponse);
+            return ResponseData.of(goodsResponse);
         } catch (HttpException e) {
             httpServletResponse.setStatus(e.getStatusCode());
             return MessageResponse.of("Unauthorized");

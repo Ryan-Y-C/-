@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.WechatshopApplication;
 import com.wechatshop.controller.ShoppingCartController;
 import com.wechatshop.entity.PageResponse;
+import com.wechatshop.entity.ResponseData;
 import com.wechatshop.entity.ShoppingCartData;
-import com.wechatshop.entity.ShoppingCartGoods;
+import com.wechatshop.entity.GoodsWithNumber;
 import com.wechatshop.generator.Goods;
 import okhttp3.Response;
 import org.junit.jupiter.api.Assertions;
@@ -47,10 +48,10 @@ public class ShoppingCartIntegrationTest extends HttpUtils {
                         .map(Goods::getId).collect(toList()));
         Assertions.assertEquals(Arrays.asList(100L, 200L),
                 pageResponse.getData().get(0).getGoods().stream()
-                        .map(ShoppingCartGoods::getPrice).collect(toList()));
+                        .map(GoodsWithNumber::getPrice).collect(toList()));
         Assertions.assertEquals(Arrays.asList(200, 300),
                 pageResponse.getData().get(0).getGoods().stream()
-                        .map(ShoppingCartGoods::getNumber).collect(toList()));
+                        .map(GoodsWithNumber::getNumber).collect(toList()));
     }
 
     @Test
@@ -66,11 +67,11 @@ public class ShoppingCartIntegrationTest extends HttpUtils {
 
         request.setGoods(Collections.singletonList(item));
         Response addShoppingCartResponse = post("/api/v1/shoppingCart", request, setCookie);
-        com.wechatshop.entity.Response<ShoppingCartData> shoppingCartData = objectMapper.readValue(addShoppingCartResponse.body().string(), new TypeReference<com.wechatshop.entity.Response<ShoppingCartData>>() {
+        ResponseData<ShoppingCartData> shoppingCartData = objectMapper.readValue(addShoppingCartResponse.body().string(), new TypeReference<ResponseData<ShoppingCartData>>() {
         });
         Assertions.assertEquals(1L, shoppingCartData.getData().getShop().getId());
         Assertions.assertEquals(Arrays.asList(1L, 2L), shoppingCartData.getData().getGoods().stream().map(Goods::getId).collect(Collectors.toList()));
-        Assertions.assertEquals(Arrays.asList(100, 2), shoppingCartData.getData().getGoods().stream().map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
+        Assertions.assertEquals(Arrays.asList(100, 2), shoppingCartData.getData().getGoods().stream().map(GoodsWithNumber::getNumber).collect(Collectors.toList()));
         Assertions.assertTrue(shoppingCartData.getData().getGoods().stream().allMatch(shoppingCartGoods -> shoppingCartGoods.getShopId() == 1L));
     }
 
@@ -79,11 +80,11 @@ public class ShoppingCartIntegrationTest extends HttpUtils {
         userLoginResponse = loginAndGetCookie();
         String setCookie = userLoginResponse.getCookie();
         Response deleteResponse = delete("/api/v1/shoppingCart/5", setCookie);
-        com.wechatshop.entity.Response<ShoppingCartData> shoppingCartData = objectMapper.readValue(deleteResponse.body().string(), new TypeReference<com.wechatshop.entity.Response<ShoppingCartData>>() {
+        ResponseData<ShoppingCartData> shoppingCartData = objectMapper.readValue(deleteResponse.body().string(), new TypeReference<ResponseData<ShoppingCartData>>() {
         });
         Assertions.assertEquals(1, shoppingCartData.getData().getGoods().size());
 
-        ShoppingCartGoods goods = shoppingCartData.getData().getGoods().get(0);
+        GoodsWithNumber goods = shoppingCartData.getData().getGoods().get(0);
 
         Assertions.assertEquals(2L, goods.getShopId());
         Assertions.assertEquals(4L, goods.getId());

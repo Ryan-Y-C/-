@@ -3,6 +3,7 @@ package com.wechatshop.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.WechatshopApplication;
+import com.wechatshop.entity.ResponseData;
 import com.wechatshop.generator.Goods;
 import com.wechatshop.generator.Shop;
 import okhttp3.Response;
@@ -37,8 +38,8 @@ public class GoodsIntegrationTest extends HttpUtils {
         assertEquals(SC_CREATED, httpResponse.code());
         //通过响应body获取Goods对象
         ObjectMapper shopObjectMapper = new ObjectMapper();
-        com.wechatshop.entity.Response<Shop> shopResponse =
-                shopObjectMapper.readValue(httpResponse.body().string(), new TypeReference<com.wechatshop.entity.Response<Shop>>() {
+        ResponseData<Shop> shopResponse =
+                shopObjectMapper.readValue(httpResponse.body().string(), new TypeReference<ResponseData<Shop>>() {
                 });
         assertEquals("微信店铺", shopResponse.getData().getName());
         assertEquals("微信小店铺", shopResponse.getData().getDescription());
@@ -59,8 +60,8 @@ public class GoodsIntegrationTest extends HttpUtils {
             assertEquals(SC_CREATED, response.code());
             //通过响应body获取Goods对象
             ObjectMapper objectMapper = new ObjectMapper();
-            com.wechatshop.entity.Response<Goods> goodsResponse =
-                    objectMapper.readValue(response.body().string(), new TypeReference<com.wechatshop.entity.Response<Goods>>() {
+            ResponseData<Goods> goodsResponse =
+                    objectMapper.readValue(response.body().string(), new TypeReference<ResponseData<Goods>>() {
                     });
             assertEquals(SC_CREATED, response.code());
             assertEquals("肥皂", goodsResponse.getData().getName());
