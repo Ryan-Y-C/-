@@ -1,19 +1,20 @@
 package com.api.data;
 
+import com.api.generator.Order;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-public class OrderInfo implements Serializable {
+public class RpcOrderGoods implements Serializable {
+    private Order order;
     private List<GoodsInfo> goods;
-    private long orderId;
 
-    public long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public List<GoodsInfo> getGoods() {

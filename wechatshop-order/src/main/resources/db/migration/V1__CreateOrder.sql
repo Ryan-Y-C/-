@@ -14,5 +14,12 @@ create table `order_goods`
 (
     id       bigint primary key auto_increment,
     goods_id bigint,
+    order_id bigint,
     number   bigint
-)
+);
+INSERT INTO `order` (ID, USER_ID, TOTAL_PRICE, ADDRESS, EXPRESS_COMPANY, EXPRESS_ID, STATUS)
+VALUES (1, 1, 1400, '火星', '顺丰', '运单1234567', 'delivered');
+
+INSERT INTO ORDER_GOODS(GOODS_ID, ORDER_ID, NUMBER)
+VALUES (1, 1, 5),
+       (2, 1, 9);

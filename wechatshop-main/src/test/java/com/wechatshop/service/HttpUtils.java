@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.entity.LoginResponse;
-
 import com.wechatshop.generator.User;
 import okhttp3.*;
 import org.flywaydb.core.Flyway;
@@ -187,15 +186,45 @@ public class HttpUtils {
         return "http://localhost:" + environment.getProperty("local.server.port") + apiName;
     }
 
-    Response delete(String url, String cookie) throws IOException {
+    public Response delete(String url, String cookie) throws IOException {
         Request request = new Request.Builder()
                 .addHeader("Cookie", cookie)
-                .delete()
+                .delete(null)
                 .url(getUrl(url))
                 .build();
         return client.newCall(request).execute();
     }
+
+    public <T> T delete(String url, String cookie, TypeReference<T> typeReference) throws IOException {
+        Request request = new Request.Builder()
+                .url(getUrl(url))
+                .delete(null)
+                .addHeader("Cookie", cookie)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return objectMapper.readValue(response.body().string(), typeReference);
+        }
+    }
+
     <T> T getObjectMapper(String response, TypeReference<T> typeReference) throws IOException {
         return objectMapper.readValue(response, typeReference);
+    }
+
+    public Response getResponse(String cookie, String url) throws IOException {
+        Request request = new Request.Builder()
+                .addHeader("Cookie", cookie)
+                .url(getUrl(url))
+                .build();
+        return client.newCall(request).execute();
+    }
+
+    <T> T getObjectMapper(String cookie, String url, TypeReference<T> typeReference) throws IOException {
+        Request request = new Request.Builder()
+                .addHeader("Cookie", cookie)
+                .url(getUrl(url))
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return objectMapper.readValue(response.body().string(), typeReference);
+        }
     }
 }

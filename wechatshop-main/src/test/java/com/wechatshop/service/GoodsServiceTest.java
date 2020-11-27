@@ -1,8 +1,8 @@
 package com.wechatshop.service;
 
 import com.api.DataStatus;
-import com.wechatshop.entity.HttpException;
-import com.wechatshop.entity.PageResponse;
+import com.api.exceptions.HttpException;
+import com.api.data.PageResponse;
 import com.wechatshop.generator.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

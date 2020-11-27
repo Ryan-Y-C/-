@@ -1,6 +1,6 @@
 package com.wechatshop.controller;
 
-import com.wechatshop.entity.HttpException;
+import com.api.exceptions.HttpException;
 import com.wechatshop.entity.MessageResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

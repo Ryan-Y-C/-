@@ -2,10 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.order.mapper.MyOrderMapper">
     <insert id="insertOrders" parameterType="OrderInfo">
-        insert into (GOODS_ID,NUMBER)
+        insert into 'order_goods'(GOODS_ID,ORDER_ID,NUMBER)
         values
         <foreach item="item" collection="goods" separator=",">
-            (#{item.id},#{item.number})
+            (#{item.id},#{id},#{item.number})
         </foreach>
     </insert>
+    <select id="getGoodsInfoOfOrder" parameterType="long" resultType="GoodsInfo">
+        select goods_id as id, number as number
+        from order_goods
+        where ORDER_ID = #{id}
+    </select>
+    <update id="updateByOrderId" parameterType="Order">
+        update shop_order."order"
+        set
+        updated_at=now()
+        <if test="expressCompany!=null">
+            ,
+            express_company=#{expressCompany}
+        </if>
+        <if test="express_id!=null">
+            ,
+            express_id=#{expressId}
+        </if>
+        <if test="status!=null">
+            ,
+            status=#{status}
+        </if>
+        where id=#{id}
+    </update>
 </mapper>

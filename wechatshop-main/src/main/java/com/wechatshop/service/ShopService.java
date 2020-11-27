@@ -1,8 +1,8 @@
 package com.wechatshop.service;
 
 import com.api.DataStatus;
-import com.wechatshop.entity.HttpException;
-import com.wechatshop.entity.PageResponse;
+import com.api.exceptions.HttpException;
+import com.api.data.PageResponse;
 import com.wechatshop.generator.Shop;
 import com.wechatshop.generator.ShopExample;
 import com.wechatshop.generator.ShopMapper;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wechatshop.WechatshopApplication;
 import com.wechatshop.controller.ShoppingCartController;
-import com.wechatshop.entity.PageResponse;
+import com.api.data.PageResponse;
 import com.wechatshop.entity.ResponseData;
 import com.wechatshop.entity.ShoppingCartData;
 import com.wechatshop.entity.GoodsWithNumber;

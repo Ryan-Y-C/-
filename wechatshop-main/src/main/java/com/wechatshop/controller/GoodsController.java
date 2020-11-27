@@ -1,7 +1,7 @@
 package com.wechatshop.controller;
 
 
-import com.wechatshop.entity.PageResponse;
+import com.api.data.PageResponse;
 import com.wechatshop.entity.ResponseData;
 import com.wechatshop.generator.Goods;
 import com.wechatshop.service.GoodsService;
