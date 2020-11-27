@@ -64,6 +64,15 @@ public class HttpUtils {
                 .build();
         return client.newCall(request).execute();
     }
+    Response patch(String url, Object object, String cookie) throws IOException {
+        RequestBody body = RequestBody.create(getJson(object), JSON);
+        Request request = new Request.Builder()
+                .url(getUrl(url))
+                .patch(body)
+                .addHeader("Cookie", cookie)
+                .build();
+        return client.newCall(request).execute();
+    }
 
     public String post(String url, Object object, boolean isReturnResponse) throws IOException {
         if (isReturnResponse) {
@@ -189,7 +198,7 @@ public class HttpUtils {
     public Response delete(String url, String cookie) throws IOException {
         Request request = new Request.Builder()
                 .addHeader("Cookie", cookie)
-                .delete(null)
+                .delete()
                 .url(getUrl(url))
                 .build();
         return client.newCall(request).execute();
@@ -198,7 +207,7 @@ public class HttpUtils {
     public <T> T delete(String url, String cookie, TypeReference<T> typeReference) throws IOException {
         Request request = new Request.Builder()
                 .url(getUrl(url))
-                .delete(null)
+                .delete()
                 .addHeader("Cookie", cookie)
                 .build();
         try (Response response = client.newCall(request).execute()) {

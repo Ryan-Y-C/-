@@ -5,6 +5,7 @@ import com.api.DataStatus;
 import com.api.data.OrderInfo;
 import com.api.data.PageResponse;
 import com.api.exceptions.HttpException;
+import com.api.generator.Order;
 import com.wechatshop.entity.OrderResponse;
 import com.wechatshop.entity.ResponseData;
 import com.wechatshop.service.OrderService;
@@ -47,13 +48,12 @@ public class OrderController {
         return orderService.getOrder(UserContext.getCurrentUser().getId(), pageNum, pageSize, DataStatus.fromStatus(status));
     }
 
-//    @PatchMapping("/order")
-//    public Object updateOrder(@RequestBody Order order) {
-//        if (order.getExpressCompany() != null) {
-//            orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId());
-//        } else {
-//            orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId());
-//        }
-//        return null;
-//    }
+    @PatchMapping("/order/{id}")
+    public ResponseData<OrderResponse> updateOrder(@PathVariable("id") Integer id, @RequestBody Order order) {
+        if (order.getExpressCompany() != null) {
+            return ResponseData.of(orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId()));
+        } else {
+            return ResponseData.of(orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId()));
+        }
+    }
 }

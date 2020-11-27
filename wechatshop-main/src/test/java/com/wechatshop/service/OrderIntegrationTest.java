@@ -140,27 +140,15 @@ public class OrderIntegrationTest extends HttpUtils {
                         .flatMap(List::stream)
                         .map(GoodsWithNumber::getNumber)
                         .collect(Collectors.toList()));
-
-
-        //再次获取
-    }
-
-    @Test
-    public void canDeleteByOrder() throws IOException {
-        UserLoginResponse loginResponse = loginAndGetCookie();
         //删除某个订单
-        RpcOrderGoods orderGoods = mockRpcOrderGoods(100, 1, 3, 2, 5, DataStatus.DELETED);
+        RpcOrderGoods orderGoods = mockRpcOrderGoods(100, 1, 3, 2, 5, DataStatus.DELETED, "", "");
 
         when(mockOrderRpcService.rpcOrderService.deleteOrder(anyLong(), anyLong()))
                 .thenReturn(orderGoods);
         final Response delete = delete("/api/v1/order/100", loginResponse.getCookie());
-        System.out.println("delete"+delete.body().string());
+        System.out.println("delete" + delete.body().string());
         ResponseData<OrderResponse> deleteOrders = delete("/api/v1/order/100", loginResponse.getCookie(), new TypeReference<ResponseData<OrderResponse>>() {
         });
-//        Response deleteOrderResponse = delete("/api/v1/order/100", loginResponse.getCookie());
-//        System.out.println("deleteOrderResponse:" + deleteOrderResponse.body().string());
-//        ResponseData<OrderResponse> deleteOrders = getObjectMapper(deleteOrderResponse.body().string(), new TypeReference<ResponseData<OrderResponse>>() {
-//        });
         Assertions.assertEquals(DataStatus.DELETED.getName(), deleteOrders.getData().getStatus());
         Assertions.assertEquals(100, deleteOrders.getData().getId());
         Assertions.assertEquals(1, deleteOrders.getData().getGoods().size());
@@ -169,14 +157,69 @@ public class OrderIntegrationTest extends HttpUtils {
         Assertions.assertEquals(2, deleteOrders.getData().getShop().getId());
     }
 
+    @Test
+    public void canUpDateOrderExpressInFormation() throws IOException {
+        Order updateOrderRequest = new Order();
+        updateOrderRequest.setId(123L);
+        updateOrderRequest.setShopId(2L);
+        updateOrderRequest.setExpressCompany("顺丰");
+        updateOrderRequest.setExpressId("SF1234567");
+
+        Order orderInDatabase = new Order();
+        orderInDatabase.setId(123L);
+        orderInDatabase.setShopId(2L);
+        when(mockOrderRpcService.rpcOrderService.getOrderById(anyLong())).thenReturn(orderInDatabase);
+        when(mockOrderRpcService.rpcOrderService.updateOrder(any())).thenReturn(mockRpcOrderGoods(123L, 1L, 3, 2, 5, DataStatus.DELIVERED, "SF1234567", "顺丰"));
+        Response response = patch("/api/v1/order/123", updateOrderRequest, loginAndGetCookie().getCookie());
+        ResponseData<OrderResponse> responseOrder = getObjectMapper(response.body().string(), new TypeReference<ResponseData<OrderResponse>>() {
+        });
+        Assertions.assertEquals(123L, responseOrder.getData().getId());
+        Assertions.assertEquals(1L, responseOrder.getData().getUserId());
+        Assertions.assertEquals(2L, responseOrder.getData().getShop().getId());
+        Assertions.assertEquals(3, responseOrder.getData().getGoods().get(0).getId());
+        Assertions.assertEquals("顺丰", responseOrder.getData().getExpressCompany());
+        Assertions.assertEquals("SF1234567", responseOrder.getData().getExpressId());
+        Assertions.assertEquals(DataStatus.DELIVERED.getName(), responseOrder.getData().getStatus());
+    }
+
+    @Test
+    public void canUpDateOrderStatus() throws IOException {
+        Order updateOrderRequest = new Order();
+        updateOrderRequest.setId(123L);
+        updateOrderRequest.setStatus(DataStatus.RECEIVED.getName());
+
+        Order orderInDatabase = new Order();
+        orderInDatabase.setId(123L);
+        orderInDatabase.setUserId(1L);
+        when(mockOrderRpcService.rpcOrderService.getOrderById(anyLong())).thenReturn(orderInDatabase);
+        when(mockOrderRpcService.rpcOrderService.updateOrder(any())).thenReturn(mockRpcOrderGoods(123L, 1L, 3, 2, 5, DataStatus.RECEIVED, "SF1234567", "顺丰"));
+        Response response = patch("/api/v1/order/123", updateOrderRequest, loginAndGetCookie().getCookie());
+        ResponseData<OrderResponse> responseOrder = getObjectMapper(response.body().string(), new TypeReference<ResponseData<OrderResponse>>() {
+        });
+        Assertions.assertEquals(123L, responseOrder.getData().getId());
+        Assertions.assertEquals(1L, responseOrder.getData().getUserId());
+        Assertions.assertEquals(2L, responseOrder.getData().getShop().getId());
+        Assertions.assertEquals(3, responseOrder.getData().getGoods().get(0).getId());
+        Assertions.assertEquals(DataStatus.RECEIVED.getName(), responseOrder.getData().getStatus());
+    }
+
+    @Test
+    public void return404IfOrderNotFound() throws IOException {
+        when(mockOrderRpcService.rpcOrderService.getOrderById(anyLong())).thenReturn(null);
+        Order order = new Order();
+        order.setId(123L);
+        Response response = patch("/api/v1/order/123", order, loginAndGetCookie().getCookie());
+        Assertions.assertEquals(404, response.code());
+    }
+
 
     private PageResponse<RpcOrderGoods> mockResponse() {
-        RpcOrderGoods order1 = mockRpcOrderGoods(100, 1, 3, 2, 5, DataStatus.DELETED);
-        RpcOrderGoods order2 = mockRpcOrderGoods(101, 1, 4, 2, 3, DataStatus.RECEIVED);
+        RpcOrderGoods order1 = mockRpcOrderGoods(100, 1, 3, 2, 5, DataStatus.DELETED, "", "");
+        RpcOrderGoods order2 = mockRpcOrderGoods(101, 1, 4, 2, 3, DataStatus.RECEIVED, "", "");
         return PageResponse.pageData(3, 2, 10, Arrays.asList(order1, order2));
     }
 
-    private RpcOrderGoods mockRpcOrderGoods(long orderId, long userId, long goodsId, long shopId, int number, DataStatus status) {
+    private RpcOrderGoods mockRpcOrderGoods(long orderId, long userId, long goodsId, long shopId, int number, DataStatus status, String expressId, String expressCompany) {
         GoodsInfo goodsInfo = new GoodsInfo();
         goodsInfo.setId(goodsId);
         goodsInfo.setNumber(number);
@@ -186,9 +229,8 @@ public class OrderIntegrationTest extends HttpUtils {
         order.setUserId(userId);
         order.setShopId(shopId);
         order.setStatus(status.getName());
-
-//        OrderResponse orderResponse=new OrderResponse(order);
-//        orderResponse.setGoods(Arrays.asList(goodsInfo));
+        order.setExpressId(expressId);
+        order.setExpressCompany(expressCompany);
 
         RpcOrderGoods orderGoods = new RpcOrderGoods();
         orderGoods.setGoods(Arrays.asList(goodsInfo));
